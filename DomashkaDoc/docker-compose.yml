@@ -1,0 +1,78 @@
+services:
+  prometheus:
+    container_name: GromovDV_prometheus
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    volumes:
+        - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    networks:
+      - my-netology-hw
+    ports:
+      - "9090:9090"
+
+  alertmanager:
+    container_name: alertmanager
+    image: prom/alertmanager:latest
+    restart: unless-stopped
+    volumes:
+      - ./alertmanager/config.yml:/etc/alertmanager/config.yml:ro
+    command:
+      - "--config.file=/etc/alertmanager/config.yml"
+      - "--storage.path=/alertmanager"
+    networks:
+      - my-netology-hw
+    ports:
+      - "9093:9093"
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - my-netology-hw
+    ports:
+      - "3000:3000"
+
+  node-exporter:
+    container_name: node-exporter
+    image: prom/node-exporter:latest
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    networks:
+      - my-netology-hw
+    ports:
+      - "9100:9100"
+
+  pushgateway:
+    container_name: GromovDV_netology_pushgateway
+    image: prom/pushgateway:latest
+    restart: unless-stopped
+    networks:
+      - my-netology-hw
+    ports:
+      - "9091:9091"
+
+volumes:
+  grafana_data:
+
+networks:
+  my-netology-hw:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
