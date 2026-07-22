@@ -14,19 +14,19 @@ services:
     ports:
       - "9090:9090"
 
-  alertmanager:
-    container_name: alertmanager
-    image: prom/alertmanager:latest
-    restart: unless-stopped
-    volumes:
-      - ./alertmanager/config.yml:/etc/alertmanager/config.yml:ro
-    command:
-      - "--config.file=/etc/alertmanager/config.yml"
-      - "--storage.path=/alertmanager"
-    networks:
-      - my-netology-hw
-    ports:
-      - "9093:9093"
+#  alertmanager:
+#    container_name: alertmanager
+#    image: prom/alertmanager:latest
+#    restart: unless-stopped
+#    volumes:
+#      - ./alertmanager/config.yml:/etc/alertmanager/config.yml:ro
+#    command:
+#      - "--config.file=/etc/alertmanager/config.yml"
+#      - "--storage.path=/alertmanager"
+#    networks:
+#      - my-netology-hw
+#    ports:
+#      - "9093:9093"
 
   grafana:
     container_name: grafana
